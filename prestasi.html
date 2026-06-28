@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prestasi Sekolah - Pondok Pesantren Darut Thalib</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a5f3c; --primary-light: #2d8b5e; --primary-dark: #0d3d26;
+            --gold: #d4af37; --gold-light: #f0d878; --cream: #faf8f3;
+            --dark: #1a1a1a; --text: #333;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+
+        .loader { position: fixed; inset: 0; background: var(--primary); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease, visibility 0.5s ease; }
+        .loader.hidden { opacity: 0; visibility: hidden; }
+        .loader-icon { width: 80px; height: 80px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { color: white; margin-top: 20px; font-family: 'Amiri', serif; font-size: 24px; }
+
+        .navbar { position: fixed; top: 0; width: 100%; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 50px; height: 50px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold { 0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 50% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); } }
+        .logo-text { font-family: 'Amiri', serif; font-size: 28px; font-weight: 700; color: var(--primary); }
+        .logo-text span { color: var(--gold); }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links a { color: var(--primary); text-decoration: none; font-weight: 500; font-size: 15px; position: relative; transition: color 0.3s; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--gold); transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--gold); }
+        .btn-back { padding: 10px 25px; background: var(--primary); color: white; text-decoration: none; border-radius: 50px; font-weight: 500; font-size: 14px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-back:hover { background: var(--primary-dark); transform: translateX(-5px); }
+
+        .hero-prestasi { height: 55vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 100px 20px 40px; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%); position: relative; overflow: hidden; }
+        .hero-prestasi::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; }
+        .hero-badge { display: inline-block; padding: 8px 25px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; color: var(--gold-light); font-size: 14px; margin-bottom: 20px; backdrop-filter: blur(5px); }
+        .hero-content h1 { font-family: 'Amiri', serif; font-size: 52px; color: white; margin-bottom: 15px; }
+        .hero-content h1 span { color: var(--gold); }
+        .hero-content p { color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.8; }
+        .breadcrumb { display: flex; gap: 10px; justify-content: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 14px; }
+        .breadcrumb a { color: var(--gold-light); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        section { padding: 80px 5%; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-family: 'Amiri', serif; font-size: 42px; color: var(--primary); margin-bottom: 15px; }
+        .section-header p { color: #666; font-size: 16px; max-width: 600px; margin: 0 auto; }
+        .divider { width: 80px; height: 4px; background: var(--gold); margin: 15px auto; border-radius: 2px; }
+
+        .stats-section { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); position: relative; overflow: hidden; }
+        .stats-section .section-header h2, .stats-section .section-header p { color: white; }
+        .stats-section .divider { background: var(--gold); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1000px; margin: 0 auto; }
+        .stat-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 35px 25px; text-align: center; color: white; transition: all 0.4s ease; }
+        .stat-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-8px); }
+        .stat-card .stat-icon { font-size: 40px; margin-bottom: 15px; }
+        .stat-card .stat-number { font-size: 42px; font-weight: 700; color: var(--gold); margin-bottom: 5px; }
+        .stat-card .stat-label { font-size: 14px; opacity: 0.85; }
+
+        .prestasi-section { background: white; }
+        .prestasi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .prestasi-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.08); transition: all 0.4s ease; border: 1px solid rgba(0,0,0,0.05); }
+        .prestasi-card:hover { transform: translateY(-10px); box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
+        .prestasi-img { width: 100%; height: 250px; object-fit: cover; transition: transform 0.5s ease; }
+        .prestasi-card:hover .prestasi-img { transform: scale(1.05); }
+        .prestasi-body { padding: 30px; }
+        .prestasi-tag { display: inline-block; padding: 5px 15px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: white; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+        .prestasi-body h3 { font-family: 'Amiri', serif; font-size: 22px; color: var(--primary); margin-bottom: 10px; }
+        .prestasi-body p { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 15px; }
+        .prestasi-meta { display: flex; gap: 20px; font-size: 13px; color: #888; }
+        .prestasi-meta span { display: flex; align-items: center; gap: 5px; }
+        .prestasi-meta i { color: var(--gold); }
+
+        .timeline-section { background: linear-gradient(180deg, var(--cream) 0%, white 100%); }
+        .timeline { max-width: 900px; margin: 0 auto; position: relative; }
+        .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--gold), var(--primary)); transform: translateX(-50%); }
+        .timeline-item { display: flex; margin-bottom: 50px; position: relative; }
+        .timeline-item:nth-child(odd) { flex-direction: row-reverse; }
+        .timeline-content { width: 45%; background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s ease; }
+        .timeline-content:hover { transform: scale(1.03); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        .timeline-year { position: absolute; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4); z-index: 2; }
+        .timeline-content h4 { font-family: 'Amiri', serif; font-size: 20px; color: var(--primary); margin-bottom: 8px; }
+        .timeline-content p { font-size: 14px; color: #666; line-height: 1.6; }
+        .timeline-img { width: 100%; height: 180px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
+
+        .gallery-section { background: white; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .gallery-item { position: relative; border-radius: 20px; overflow: hidden; height: 320px; cursor: pointer; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26, 95, 60, 0.9), rgba(26, 95, 60, 0.3)); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 30px; opacity: 0; transition: opacity 0.4s ease; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-overlay h4 { color: white; font-family: 'Amiri', serif; font-size: 20px; margin-bottom: 5px; text-align: center; }
+        .gallery-overlay p { color: rgba(255,255,255,0.8); font-size: 13px; text-align: center; }
+        .gallery-overlay .trophy-icon { font-size: 40px; margin-bottom: 10px; }
+
+        .testimoni-section { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); position: relative; overflow: hidden; }
+        .testimoni-section .section-header h2, .testimoni-section .section-header p { color: white; }
+        .testimoni-section .divider { background: var(--gold); }
+        .testimoni-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        .testimoni-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 30px; color: white; transition: all 0.4s ease; }
+        .testimoni-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-5px); }
+        .testimoni-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .testimoni-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); }
+        .testimoni-header h4 { font-size: 18px; margin-bottom: 3px; }
+        .testimoni-header span { font-size: 13px; opacity: 0.8; }
+        .testimoni-card p { font-size: 15px; line-height: 1.8; font-style: italic; opacity: 0.9; }
+        .testimoni-stars { color: var(--gold); margin-top: 15px; font-size: 14px; }
+
+        .footer { background: var(--dark); color: white; padding: 50px 5% 25px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto 30px; }
+        .footer-brand .logo-text { color: white; margin-bottom: 15px; display: block; font-family: 'Amiri', serif; font-size: 24px; }
+        .footer-brand .logo-text span { color: var(--gold); }
+        .footer-brand p { color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 14px; }
+        .footer-links h4 { color: var(--gold); margin-bottom: 20px; font-size: 18px; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-size: 14px; }
+        .footer-links a:hover { color: var(--gold); }
+        .footer-bottom { text-align: center; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 14px; }
+
+        .whatsapp-float { position: fixed; right: 25px; bottom: 25px; z-index: 9999; animation: slideInRight 0.5s ease, pulse-whatsapp 2s infinite; }
+        @keyframes slideInRight { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes pulse-whatsapp { 0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); } 50% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } }
+        .whatsapp-btn { width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; text-decoration: none; box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); transition: all 0.3s ease; position: relative; }
+        .whatsapp-btn:hover { transform: scale(1.1) rotate(10deg); }
+        .whatsapp-tooltip { position: absolute; right: 70px; top: 50%; transform: translateY(-50%); background: white; color: #333; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; white-space: nowrap; box-shadow: 0 5px 20px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .whatsapp-tooltip::after { content: ''; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); border: 8px solid transparent; border-left-color: white; }
+        .whatsapp-float:hover .whatsapp-tooltip { opacity: 1; visibility: visible; right: 75px; }
+
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 32px; }
+            .nav-links { display: none; }
+            .timeline::before { left: 20px; }
+            .timeline-item, .timeline-item:nth-child(odd) { flex-direction: column; }
+            .timeline-content { width: 100%; margin-left: 50px; }
+            .timeline-year { left: 20px; transform: translateX(-50%); }
+            .prestasi-grid { grid-template-columns: 1fr; }
+            section { padding: 60px 5%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-icon"></div>
+        <div class="loader-text">Pondok Pesantren Darut Thalib</div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-mosque"></i></div>
+            <div class="logo-text">Darut <span>Thalib</span></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero-prestasi">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-trophy"></i> Prestasi Gemilang</div>
+            <h1>Prestasi <span>Sekolah</span> Kami</h1>
+            <p>Berbagai pencapaian membanggakan yang diraih oleh santri dan alumni Pondok Pesantren Darut Thalib di tingkat nasional maupun internasional</p>
+            <div class="breadcrumb">
+                <a href="index.html">Beranda</a> / <span>Prestasi Sekolah</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="section-header reveal">
+            <h2>Prestasi dalam Angka</h2>
+            <div class="divider"></div>
+            <p>Ringkasan pencapaian Pondok Pesantren Darut Thalib selama bertahun-tahun</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card reveal">
+                <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                <div class="stat-number" data-target="150">0</div>
+                <div class="stat-label">Trophy & Medali</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="stat-number" data-target="85">0</div>
+                <div class="stat-label">Hafizh 30 Juz</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-icon"><i class="fas fa-globe"></i></div>
+                <div class="stat-number" data-target="42">0</div>
+                <div class="stat-label">Juara Internasional</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-icon"><i class="fas fa-certificate"></i></div>
+                <div class="stat-number" data-target="200">0</div>
+                <div class="stat-label">Sertifikat Kompetisi</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-icon"><i class="fas fa-medal"></i></div>
+                <div class="stat-number" data-target="9">0</div>
+                <div class="stat-label">Tahun Berprestasi</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="prestasi-section" id="prestasi-unggulan">
+        <div class="section-header reveal">
+            <h2>Prestasi Unggulan</h2>
+            <div class="divider"></div>
+            <p>Pencapaian terbaik yang diraih oleh santri Darut Thalib di berbagai bidang</p>
+        </div>
+        <div class="prestasi-grid">
+            <div class="prestasi-card reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/cdn-jpr.jawapos.com/1a2dfeeb68de5e5ea07b44cee1d8a8d7d80420a5.jpeg" alt="Juara MHQ Internasional" class="prestasi-img">
+                <div class="prestasi-body">
+                    <span class="prestasi-tag">Juara 3 Dunia</span>
+                    <h3>Kejuaraan Hafalan Quran Internasional</h3>
+                    <p>Santri kami berhasil meraih Juara 3 dalam Kejuaraan Hafalan 30 Juz Al-Quran tingkat internasional yang diselenggarakan di Mesir.</p>
+                    <div class="prestasi-meta">
+                        <span><i class="fas fa-calendar"></i> 2025</span>
+                        <span><i class="fas fa-map-marker-alt"></i> Kairo, Mesir</span>
+                        <span><i class="fas fa-user"></i> Farhan Al-Hafizh</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prestasi-card reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/katasumbar.com/e21a901db6e689c9b63b7349226ca466d4638d64.webp" alt="Hafiz Indonesia 2026" class="prestasi-img">
+                <div class="prestasi-body">
+                    <span class="prestasi-tag">Juara 1 Nasional</span>
+                    <h3>Hafiz Indonesia 2026 RCTI</h3>
+                    <p>Santri muda kami meraih nilai tertinggi 140 poin dalam kompetisi hafalan Quran terbesar di Indonesia yang disiarkan langsung di RCTI.</p>
+                    <div class="prestasi-meta">
+                        <span><i class="fas fa-calendar"></i> 2026</span>
+                        <span><i class="fas fa-tv"></i> RCTI</span>
+                        <span><i class="fas fa-user"></i> Rahman Al-Hafizh</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prestasi-card reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/pesantren.uii.ac.id/241dce4f8b286865fca7a248a5c1ab64bddd7c91.jpeg" alt="Juara Pidato Bahasa Arab" class="prestasi-img">
+                <div class="prestasi-body">
+                    <span class="prestasi-tag">Juara 3 Nasional</span>
+                    <h3>Lomba Pidato Bahasa Arab MAHABBAH UNS</h3>
+                    <p>Santri berhasil meraih Juara 3 dalam lomba pidato bahasa Arab tingkat nasional yang diadakan oleh Universitas Sebelas Maret.</p>
+                    <div class="prestasi-meta">
+                        <span><i class="fas fa-calendar"></i> 2025</span>
+                        <span><i class="fas fa-map-marker-alt"></i> Solo, Jawa Tengah</span>
+                        <span><i class="fas fa-user"></i> M. Abdul Azis</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prestasi-card reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/islamdownload.net/5b257978c542164994ad4ff98c32f6ac78fe7457.jpg" alt="Prestasi Hafiz Quran" class="prestasi-img">
+                <div class="prestasi-body">
+                    <span class="prestasi-tag">Finalis Nasional</span>
+                    <h3>Hafiz Quran Indonesia 2025</h3>
+                    <p>Santri kami lolos sebagai finalis dalam ajang bergengsi Hafiz Quran Indonesia yang diselenggarakan oleh Kemenag RI.</p>
+                    <div class="prestasi-meta">
+                        <span><i class="fas fa-calendar"></i> 2025</span>
+                        <span><i class="fas fa-tv"></i> MNCTV</span>
+                        <span><i class="fas fa-user"></i> Ahsani Karawang</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prestasi-card reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/idn.sch.id/26110a07065a5641da6a4cfbbf293f48c78a78d5.webp" alt="Medali Emas Bahasa Inggris" class="prestasi-img">
+                <div class="prestasi-body">
+                    <span class="prestasi-tag">Medali Emas</span>
+                    <h3>Olimpiade Sains Pancasila Nasional</h3>
+                    <p>Santri meraih Medali Emas dalam kategori Bahasa Inggris pada ajang OSPN yang diselenggarakan oleh Gypen tingkat nasional.</p>
+                    <div class="prestasi-meta">
+                        <span><i class="fas fa-calendar"></i> 2026</span>
+                        <span><i class="fas fa-award"></i> OSPN Nasional</span>
+                        <span><i class="fas fa-user"></i> Arqan Anabiel</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prestasi-card reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/pesantrennuris.net/b9b02bd6179291b45e28b6f5225c6d2e047b66db.jpeg" alt="Wisuda Khatam Kitab" class="prestasi-img">
+                <div class="prestasi-body">
+                    <span class="prestasi-tag">Khatam 12 Kitab</span>
+                    <h3>Wisuda Kitab & Tahfidz Ke-X</h3>
+                    <p>Santri berprestasi berhasil menyelesaikan khatam 12 kitab kuning dalam waktu 3 tahun dan meraih predikat santri unggulan.</p>
+                    <div class="prestasi-meta">
+                        <span><i class="fas fa-calendar"></i> 2026</span>
+                        <span><i class="fas fa-book"></i> 12 Kitab</span>
+                        <span><i class="fas fa-user"></i> Ahmad Farras</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="timeline-section" id="timeline">
+        <div class="section-header reveal">
+            <h2>Perjalanan Prestasi</h2>
+            <div class="divider"></div>
+            <p>Sejarah pencapaian Pondok Pesantren Darut Thalib dari tahun ke tahun</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/pesantren-alandalus.com/0566f063771a54f0ee2c636cd357d7e450004cba.jpg" alt="Medali 2024" class="timeline-img">
+                    <h4>Borong 18 Medali Nasional</h4>
+                    <p>Santriwati Darut Thalib berhasil meraih 18 medali dalam berbagai perlombaan tingkat nasional termasuk MHQ, pidato, dan kaligrafi.</p>
+                </div>
+                <div class="timeline-year">2024</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/awsimages.detik.net.id/ee5fb0db067f51729b97e547ebaefa5d71a825bb.jpg" alt="Juara Dunia 2023" class="timeline-img">
+                    <h4>Juara 3 Kejuaraan Dunia Hafalan</h4>
+                    <p>Santri kami meraih Juara 3 dalam Kejuaraan Dunia Hafalan 30 Juz Al-Quran yang diselenggarakan di Makkah, Arab Saudi.</p>
+                </div>
+                <div class="timeline-year">2023</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/blogger.googleusercontent.com/2c95190dcabf398b373cbe31dc88ba24e8844333" alt="Juara MHQ 2022" class="timeline-img">
+                    <h4>Juara 2 MHQ Internasional California</h4>
+                    <p>Santri Darut Thalib meraih Juara 2 dalam lomba Musabaqah Hifdzil Quran internasional di California, USA.</p>
+                </div>
+                <div class="timeline-year">2022</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/kreasimudaindonesia.com/b2181abc806f36fd49b6f998ebe80b9deedcb832.jpg" alt="Liga Santri 2021" class="timeline-img">
+                    <h4>Juara 1 Liga Santri Nasional</h4>
+                    <p>Tim futsal santri Darut Thalib meraih gelar juara dalam Liga Santri Nasional yang diselenggarakan di Sidoarjo.</p>
+                </div>
+                <div class="timeline-year">2021</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/kreasimudaindonesia.com/9696e029934297e5c27ee739b34a621823120166.jpg" alt="Wisuda 2020" class="timeline-img">
+                    <h4>Wisuda Santri Berprestasi</h4>
+                    <p>50 santri berhasil menyelesaikan program tahfidz dan kitab kuning dengan predikat cumlaude dan meraih penghargaan khusus.</p>
+                </div>
+                <div class="timeline-year">2020</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery-section" id="galeri-prestasi">
+        <div class="section-header reveal">
+            <h2>Galeri Prestasi</h2>
+            <div class="divider"></div>
+            <p>Momen-momen berharga saat santri meraih prestasi</p>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/cdn-jpr.jawapos.com/1a2dfeeb68de5e5ea07b44cee1d8a8d7d80420a5.jpeg" alt="Galeri 1">
+                <div class="gallery-overlay">
+                    <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
+                    <h4>Juara MHQ Internasional</h4>
+                    <p>Kairo, Mesir 2025</p>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/katasumbar.com/e21a901db6e689c9b63b7349226ca466d4638d64.webp" alt="Galeri 2">
+                <div class="gallery-overlay">
+                    <div class="trophy-icon"><i class="fas fa-medal"></i></div>
+                    <h4>Hafiz Indonesia 2026</h4>
+                    <p>Juara 1 Nilai Tertinggi</p>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/pesantren.uii.ac.id/241dce4f8b286865fca7a248a5c1ab64bddd7c91.jpeg" alt="Galeri 3">
+                <div class="gallery-overlay">
+                    <div class="trophy-icon"><i class="fas fa-microphone"></i></div>
+                    <h4>Pidato Bahasa Arab</h4>
+                    <p>Juara 3 Nasional</p>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/islamdownload.net/5b257978c542164994ad4ff98c32f6ac78fe7457.jpg" alt="Galeri 4">
+                <div class="gallery-overlay">
+                    <div class="trophy-icon"><i class="fas fa-tv"></i></div>
+                    <h4>Finalis Hafiz Quran</h4>
+                    <p>MNCTV 2025</p>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/idn.sch.id/26110a07065a5641da6a4cfbbf293f48c78a78d5.webp" alt="Galeri 5">
+                <div class="gallery-overlay">
+                    <div class="trophy-icon"><i class="fas fa-medal"></i></div>
+                    <h4>Medali Emas OSPN</h4>
+                    <p>Bahasa Inggris 2026</p>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <img src="https://kimi-web-img.moonshot.cn/img/pesantrennuris.net/b9b02bd6179291b45e28b6f5225c6d2e047b66db.jpeg" alt="Galeri 6">
+                <div class="gallery-overlay">
+                    <div class="trophy-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h4>Wisuda Khatam 12 Kitab</h4>
+                    <p>Santri Unggulan 2026</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimoni-section" id="testimoni">
+        <div class="section-header reveal">
+            <h2>Kata Mereka yang Berprestasi</h2>
+            <div class="divider"></div>
+            <p>Testimoni dari santri dan alumni yang telah meraih berbagai prestasi</p>
+        </div>
+        <div class="testimoni-grid">
+            <div class="testimoni-card reveal">
+                <div class="testimoni-header">
+                    <img src="https://kimi-web-img.moonshot.cn/img/cdn-jpr.jawapos.com/1a2dfeeb68de5e5ea07b44cee1d8a8d7d80420a5.jpeg" alt="Farhan" class="testimoni-avatar">
+                    <div>
+                        <h4>Farhan Al-Hafizh</h4>
+                        <span>Juara 3 MHQ Internasional 2025</span>
+                    </div>
+                </div>
+                <p>"Darut Thalib mengajarkan saya bahwa hafalan Quran bukan hanya soal menghafal, tapi juga memahami dan mengamalkan. Dukungan ustadz dan lingkungan yang kondusif membuat saya bisa fokus mengejar cita-cita."</p>
+                <div class="testimoni-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+            <div class="testimoni-card reveal">
+                <div class="testimoni-header">
+                    <img src="https://kimi-web-img.moonshot.cn/img/katasumbar.com/e21a901db6e689c9b63b7349226ca466d4638d64.webp" alt="Rahman" class="testimoni-avatar">
+                    <div>
+                        <h4>Rahman Al-Hafizh</h4>
+                        <span>Juara 1 Hafiz Indonesia 2026</span>
+                    </div>
+                </div>
+                <p>"Saya datang ke Darut Thalib hanya bisa baca Quran pelan-pelan. Dalam 3 tahun, saya sudah hafal 30 juz dan meraih juara nasional. Semua berkat metode tahfidz yang terstruktur dan doa orang tua."</p>
+                <div class="testimoni-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+            <div class="testimoni-card reveal">
+                <div class="testimoni-header">
+                    <img src="https://kimi-web-img.moonshot.cn/img/pesantren.uii.ac.id/241dce4f8b286865fca7a248a5c1ab64bddd7c91.jpeg" alt="Abdul Azis" class="testimoni-avatar">
+                    <div>
+                        <h4>M. Abdul Azis</h4>
+                        <span>Juara 3 Pidato Bahasa Arab 2025</span>
+                    </div>
+                </div>
+                <p>"Program bahasa Arab di Darut Thalib sangat intensif. Saya belajar dari native speaker dan praktik setiap hari. Kemenangan ini bukan milik saya sendiri, tapi milik semua ustadz yang telah membimbing."</p>
+                <div class="testimoni-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo-text">Darut <span>Thalib</span></div>
+                <p>Mencetak generasi Qur'ani yang berakhlak mulia, berilmu luas, dan siap menjadi pemimpin umat.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Link Cepat</h4>
+                <ul>
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="index.html#tentang">Tentang Kami</a></li>
+                    <li><a href="pelajaran.html">Program</a></li>
+                    <li><a href="prestasi.html">Prestasi</a></li>
+                    <li><a href="index.html#fasilitas">Fasilitas</a></li>
+                    <li><a href="index.html#galeri">Galeri</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Prestasi</h4>
+                <ul>
+                    <li><a href="#prestasi-unggulan">Prestasi Unggulan</a></li>
+                    <li><a href="#timeline">Perjalanan Prestasi</a></li>
+                    <li><a href="#galeri-prestasi">Galeri Prestasi</a></li>
+                    <li><a href="#testimoni">Testimoni Alumni</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><a href="mailto:info@darutthalib.sch.id">info@darutthalib.sch.id</a></li>
+                    <li><a href="tel:082287196964">0822-8719-6964</a></li>
+                    <li><a href="https://wa.me/6282287196964">+62 822-8719-6964</a></li>
+                    <li><a href="#">Kota Solok, Sumatera Barat</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Pondok Pesantren Darut Thalib. All Rights Reserved. | Dibuat dengan <i class="fas fa-heart" style="color: var(--gold);"></i> untuk Umat</p>
+        </div>
+    </footer>
+
+    <div class="whatsapp-float">
+        <a href="https://wa.me/6282287196964" target="_blank" class="whatsapp-btn">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <div class="whatsapp-tooltip">Chat dengan Kami!</div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        const counters = document.querySelectorAll('.stat-number');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.getAttribute('data-target'));
+                    const duration = 2000;
+                    const step = target / (duration / 16);
+                    let current = 0;
+                    const updateCounter = () => {
+                        current += step;
+                        if (current < target) {
+                            entry.target.textContent = Math.floor(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            entry.target.textContent = target;
+                        }
+                    };
+                    updateCounter();
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(counter => counterObserver.observe(counter));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

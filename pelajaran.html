@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semua Program - Pondok Pesantren Darut Thalib</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a5f3c; --primary-light: #2d8b5e; --primary-dark: #0d3d26;
+            --gold: #d4af37; --gold-light: #f0d878; --cream: #faf8f3;
+            --dark: #1a1a1a; --text: #333;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+
+        .loader { position: fixed; inset: 0; background: var(--primary); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease, visibility 0.5s ease; }
+        .loader.hidden { opacity: 0; visibility: hidden; }
+        .loader-icon { width: 80px; height: 80px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { color: white; margin-top: 20px; font-family: 'Amiri', serif; font-size: 24px; }
+
+        .navbar { position: fixed; top: 0; width: 100%; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 50px; height: 50px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold { 0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 50% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); } }
+        .logo-text { font-family: 'Amiri', serif; font-size: 28px; font-weight: 700; color: var(--primary); }
+        .logo-text span { color: var(--gold); }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links a { color: var(--primary); text-decoration: none; font-weight: 500; font-size: 15px; position: relative; transition: color 0.3s; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--gold); transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--gold); }
+        .btn-back { padding: 10px 25px; background: var(--primary); color: white; text-decoration: none; border-radius: 50px; font-weight: 500; font-size: 14px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-back:hover { background: var(--primary-dark); transform: translateX(-5px); }
+
+        .hero-detail { height: 55vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 100px 20px 40px; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%); position: relative; overflow: hidden; }
+        .hero-detail::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; }
+        .hero-badge { display: inline-block; padding: 8px 25px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; color: var(--gold-light); font-size: 14px; margin-bottom: 20px; backdrop-filter: blur(5px); }
+        .hero-content h1 { font-family: 'Amiri', serif; font-size: 52px; color: white; margin-bottom: 15px; }
+        .hero-content h1 span { color: var(--gold); }
+        .hero-content p { color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.8; }
+        .breadcrumb { display: flex; gap: 10px; justify-content: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 14px; }
+        .breadcrumb a { color: var(--gold-light); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        section { padding: 80px 5%; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-family: 'Amiri', serif; font-size: 42px; color: var(--primary); margin-bottom: 15px; }
+        .section-header p { color: #666; font-size: 16px; max-width: 600px; margin: 0 auto; }
+        .divider { width: 80px; height: 4px; background: var(--gold); margin: 15px auto; border-radius: 2px; }
+
+        .program-card { background: linear-gradient(135deg, var(--cream), white); border-radius: 25px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.08); margin-bottom: 50px; border: 1px solid rgba(0,0,0,0.05); }
+        .program-header { padding: 40px; color: white; display: flex; align-items: center; gap: 25px; position: relative; overflow: hidden; }
+        .program-header-icon { width: 80px; height: 80px; background: var(--gold); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; flex-shrink: 0; position: relative; z-index: 1; }
+        .program-header h3 { font-family: 'Amiri', serif; font-size: 32px; position: relative; z-index: 1; }
+        .program-header p { opacity: 0.9; font-size: 14px; margin-top: 5px; }
+        .program-content { padding: 40px; }
+
+        .tahfidz-header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); }
+        .kitab-header { background: linear-gradient(135deg, #8B6914, var(--gold)); }
+        .pramuka-header { background: linear-gradient(135deg, #1e3a5f, #2d5a8e); }
+        .bahasa-header { background: linear-gradient(135deg, #5e1a3c, #8e2d5a); }
+        .leadership-header { background: linear-gradient(135deg, #5e4b1a, #8e7d2d); }
+        .akhlak-header { background: linear-gradient(135deg, #1a3c5e, #2d5a8e); }
+
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .level-card { background: white; border-radius: 20px; padding: 30px; text-align: center; transition: all 0.4s ease; border: 2px solid transparent; position: relative; overflow: hidden; }
+        .level-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--gold); transform: scaleX(0); transition: transform 0.4s ease; }
+        .level-card:hover::before { transform: scaleX(1); }
+        .level-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .level-num { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; margin: 0 auto 20px; position: relative; }
+        .level-num::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--gold); animation: ripple 2s infinite; }
+        @keyframes ripple { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        .level-card h4 { font-family: 'Amiri', serif; font-size: 22px; color: var(--primary); margin-bottom: 12px; }
+        .level-card p { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 15px; }
+        .level-target { display: inline-block; padding: 8px 20px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: white; border-radius: 50px; font-size: 13px; font-weight: 600; }
+        .level-features { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd; text-align: left; }
+        .level-features li { list-style: none; font-size: 13px; color: #555; padding: 5px 0; display: flex; align-items: center; gap: 8px; }
+        .level-features li i { color: var(--gold); font-size: 12px; }
+
+        .schedule-box { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); border-radius: 20px; padding: 35px; margin-top: 35px; color: white; }
+        .schedule-box h4 { font-family: 'Amiri', serif; font-size: 24px; margin-bottom: 25px; text-align: center; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; }
+        .schedule-item { background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px 15px; text-align: center; backdrop-filter: blur(5px); transition: all 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .schedule-item:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        .schedule-item .day { font-size: 12px; opacity: 0.8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .schedule-item .juz { font-size: 22px; font-weight: 700; color: var(--gold); }
+        .schedule-item .desc { font-size: 11px; opacity: 0.7; margin-top: 5px; }
+
+        .ustadz-box { margin-top: 35px; }
+        .ustadz-box h4 { font-family: 'Amiri', serif; font-size: 24px; color: var(--primary); margin-bottom: 25px; text-align: center; }
+        .ustadz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .ustadz-card { background: white; border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; border: 1px solid rgba(0,0,0,0.05); }
+        .ustadz-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .ustadz-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 32px; color: white; }
+        .ustadz-card h5 { font-size: 16px; color: var(--primary); margin-bottom: 5px; }
+        .ustadz-card span { font-size: 13px; color: #888; }
+        .ustadz-badge { display: inline-block; margin-top: 10px; padding: 4px 12px; background: var(--cream); color: var(--primary); border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+        .kitab-section { background: linear-gradient(180deg, var(--cream) 0%, white 100%); }
+        .books-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .book-card { background: var(--cream); border-radius: 20px; padding: 30px; border-left: 5px solid var(--gold); transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .book-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); opacity: 0; transition: opacity 0.3s ease; z-index: 0; }
+        .book-card:hover::before { opacity: 1; }
+        .book-card:hover { transform: translateX(10px); color: white; }
+        .book-card > * { position: relative; z-index: 1; }
+        .book-card:hover h4, .book-card:hover .book-author, .book-card:hover .book-desc, .book-card:hover .book-level { color: white; }
+        .book-card:hover .book-level { background: rgba(255,255,255,0.2); }
+        .book-icon { font-size: 40px; margin-bottom: 15px; }
+        .book-card h4 { font-family: 'Amiri', serif; font-size: 22px; color: var(--primary); margin-bottom: 8px; }
+        .book-author { font-size: 13px; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
+        .book-desc { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 15px; }
+        .book-level { display: inline-block; padding: 5px 15px; background: var(--gold); color: white; border-radius: 20px; font-size: 12px; font-weight: 600; transition: all 0.3s; }
+        .book-detail { margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(0,0,0,0.1); }
+        .book-card:hover .book-detail { border-top-color: rgba(255,255,255,0.2); }
+        .book-detail li { list-style: none; font-size: 13px; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+        .book-detail li i { font-size: 10px; }
+
+        .metode-box { background: linear-gradient(135deg, var(--cream), white); border-radius: 20px; padding: 35px; margin-top: 35px; }
+        .metode-box h4 { font-family: 'Amiri', serif; font-size: 24px; color: var(--primary); margin-bottom: 25px; text-align: center; }
+        .metode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .metode-card { background: white; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; }
+        .metode-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .metode-card i { font-size: 32px; color: var(--gold); margin-bottom: 12px; }
+        .metode-card h5 { font-size: 16px; color: var(--primary); margin-bottom: 8px; }
+        .metode-card p { font-size: 13px; color: #666; line-height: 1.6; }
+
+        .pramuka-section { background: white; }
+        .pramuka-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .pramuka-card { background: white; border-radius: 20px; padding: 30px; text-align: center; transition: all 0.4s ease; border: 2px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .pramuka-card:hover { border-color: #2d5a8e; transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .pramuka-icon { width: 70px; height: 70px; background: linear-gradient(135deg, #1e3a5f, #2d5a8e); color: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; transition: all 0.4s ease; }
+        .pramuka-card:hover .pramuka-icon { transform: rotateY(360deg); }
+        .pramuka-card h4 { font-size: 20px; color: #1e3a5f; margin-bottom: 12px; }
+        .pramuka-card p { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 15px; }
+        .pramuka-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .pramuka-tags span { padding: 4px 12px; background: #e8f0fe; color: #1e3a5f; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+        .bahasa-section { background: linear-gradient(180deg, var(--cream) 0%, white 100%); }
+        .bahasa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .bahasa-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.4s ease; border: 1px solid rgba(0,0,0,0.05); }
+        .bahasa-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .bahasa-top { padding: 30px; color: white; text-align: center; position: relative; }
+        .bahasa-top.arab { background: linear-gradient(135deg, #5e1a3c, #8e2d5a); }
+        .bahasa-top.english { background: linear-gradient(135deg, #1a5e5e, #2d8e8e); }
+        .bahasa-top i { font-size: 40px; margin-bottom: 15px; }
+        .bahasa-top h4 { font-family: 'Amiri', serif; font-size: 24px; }
+        .bahasa-body { padding: 25px; }
+        .bahasa-body p { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 15px; }
+        .bahasa-list li { list-style: none; font-size: 13px; color: #555; padding: 6px 0; display: flex; align-items: center; gap: 10px; }
+        .bahasa-list li i { color: var(--gold); font-size: 12px; }
+
+        .leadership-section { background: white; }
+        .leadership-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+        .leadership-card { background: linear-gradient(135deg, var(--cream), white); border-radius: 20px; padding: 30px; transition: all 0.4s ease; border: 1px solid rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .leadership-card::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: var(--gold); transform: scaleY(0); transition: transform 0.4s ease; }
+        .leadership-card:hover::before { transform: scaleY(1); }
+        .leadership-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .leadership-card i { font-size: 36px; color: var(--gold); margin-bottom: 15px; }
+        .leadership-card h4 { font-size: 20px; color: var(--primary); margin-bottom: 10px; }
+        .leadership-card p { font-size: 14px; color: #666; line-height: 1.7; }
+
+        .akhlak-section { background: linear-gradient(180deg, var(--cream) 0%, white 100%); }
+        .akhlak-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .akhlak-card { background: white; border-radius: 20px; padding: 30px; text-align: center; transition: all 0.4s ease; border: 2px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .akhlak-card:hover { border-color: var(--primary); transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .akhlak-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; }
+        .akhlak-card h4 { font-family: 'Amiri', serif; font-size: 20px; color: var(--primary); margin-bottom: 12px; }
+        .akhlak-card p { font-size: 14px; color: #666; line-height: 1.7; }
+
+        .hafizh-section { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); position: relative; overflow: hidden; }
+        .hafizh-section .section-header h2, .hafizh-section .section-header p { color: white; }
+        .hafizh-section .divider { background: var(--gold); }
+        .hafizh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        .hafizh-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 30px; text-align: center; color: white; transition: all 0.4s ease; }
+        .hafizh-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-8px); }
+        .hafizh-avatar { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-light)); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; border: 4px solid rgba(255,255,255,0.3); }
+        .hafizh-card h4 { font-family: 'Amiri', serif; font-size: 22px; margin-bottom: 5px; }
+        .hafizh-card .juz-count { font-size: 36px; font-weight: 700; color: var(--gold); margin: 10px 0; }
+        .hafizh-card p { font-size: 14px; opacity: 0.85; line-height: 1.6; }
+        .hafizh-card .year { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 13px; opacity: 0.7; }
+
+        .jadwal-section { background: var(--cream); }
+        .jadwal-table { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.08); }
+        .jadwal-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 25px; text-align: center; }
+        .jadwal-header h3 { font-family: 'Amiri', serif; font-size: 24px; }
+        .jadwal-row { display: grid; grid-template-columns: 150px 1fr 1fr; padding: 18px 25px; border-bottom: 1px solid #f0f0f0; transition: all 0.3s; align-items: center; }
+        .jadwal-row:hover { background: var(--cream); }
+        .jadwal-row:last-child { border-bottom: none; }
+        .jadwal-time { font-weight: 600; color: var(--primary); font-size: 14px; }
+        .jadwal-activity { font-weight: 500; color: var(--text); font-size: 14px; }
+        .jadwal-detail { font-size: 13px; color: #888; }
+        .jadwal-row.header-row { background: var(--cream); font-weight: 700; color: var(--primary); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+
+        .footer { background: var(--dark); color: white; padding: 50px 5% 25px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto 30px; }
+        .footer-brand .logo-text { color: white; margin-bottom: 15px; display: block; font-family: 'Amiri', serif; font-size: 24px; }
+        .footer-brand .logo-text span { color: var(--gold); }
+        .footer-brand p { color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 14px; }
+        .footer-links h4 { color: var(--gold); margin-bottom: 20px; font-size: 18px; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-size: 14px; }
+        .footer-links a:hover { color: var(--gold); }
+        .footer-bottom { text-align: center; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 14px; }
+
+        .whatsapp-float { position: fixed; right: 25px; bottom: 25px; z-index: 9999; animation: slideInRight 0.5s ease, pulse-whatsapp 2s infinite; }
+        @keyframes slideInRight { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes pulse-whatsapp { 0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); } 50% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } }
+        .whatsapp-btn { width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; text-decoration: none; box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); transition: all 0.3s ease; position: relative; }
+        .whatsapp-btn:hover { transform: scale(1.1) rotate(10deg); }
+        .whatsapp-tooltip { position: absolute; right: 70px; top: 50%; transform: translateY(-50%); background: white; color: #333; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; white-space: nowrap; box-shadow: 0 5px 20px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .whatsapp-tooltip::after { content: ''; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); border: 8px solid transparent; border-left-color: white; }
+        .whatsapp-float:hover .whatsapp-tooltip { opacity: 1; visibility: visible; right: 75px; }
+
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 32px; }
+            .nav-links { display: none; }
+            .program-header { flex-direction: column; text-align: center; }
+            .jadwal-row { grid-template-columns: 1fr; gap: 5px; padding: 15px; }
+            .jadwal-row.header-row { display: none; }
+            section { padding: 60px 5%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-icon"></div>
+        <div class="loader-text">Pondok Pesantren Darut Thalib</div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-mosque"></i></div>
+            <div class="logo-text">Darut <span>Thalib</span></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero-detail">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-book"></i> Informasi Lengkap</div>
+            <h1>Semua <span>Program</span> Pendidikan</h1>
+            <p>Detail lengkap mengenai seluruh program unggulan Pondok Pesantren Darut Thalib</p>
+            <div class="breadcrumb">
+                <a href="index.html">Beranda</a> / <span>Semua Program</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAHFIDZ QURAN -->
+    <section class="tahfidz-section" id="tahfidz">
+        <div class="section-header reveal">
+            <h2>Program Tahfidz Quran</h2>
+            <div class="divider"></div>
+            <p>Metode tartil, mutqin, dan murojaah berkala dengan bimbingan ustadz berpengalaman</p>
+        </div>
+        <div class="program-card reveal">
+            <div class="program-header tahfidz-header">
+                <div class="program-header-icon"><i class="fas fa-quran"></i></div>
+                <div>
+                    <h3>Tahfidz Quran Darut Thalib</h3>
+                    <p>Target hafalan sesuai kemampuan santri dengan pendampingan intensif 24 jam</p>
+                </div>
+            </div>
+            <div class="program-content">
+                <div class="level-grid">
+                    <div class="level-card">
+                        <div class="level-num">1</div>
+                        <h4>Tahfidz Dasar</h4>
+                        <p>Program untuk santri baru yang masih mempelajari tajwid dan makhraj huruf. Fokus pada hafalan Juz 30 dan Juz 29.</p>
+                        <span class="level-target">Target: 2 Juz / Semester</span>
+                        <ul class="level-features">
+                            <li><i class="fas fa-check-circle"></i> Pembelajaran Tajwid Dasar</li>
+                            <li><i class="fas fa-check-circle"></i> Makhraj Huruf</li>
+                            <li><i class="fas fa-check-circle"></i> Hafalan Juz 30 & 29</li>
+                            <li><i class="fas fa-check-circle"></i> Setoran 2 Halaman/Hari</li>
+                        </ul>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-num">2</div>
+                        <h4>Tahfidz Menengah</h4>
+                        <p>Santri yang sudah lancar tajwid memulai hafalan dari Juz 1. Metode setoran harian dengan murojaah berkala.</p>
+                        <span class="level-target">Target: 5 Juz / Semester</span>
+                        <ul class="level-features">
+                            <li><i class="fas fa-check-circle"></i> Hafalan Juz 1 - 15</li>
+                            <li><i class="fas fa-check-circle"></i> Setoran 1 Halaman/Hari</li>
+                            <li><i class="fas fa-check-circle"></i> Murojaah 5 Juz/Minggu</li>
+                            <li><i class="fas fa-check-circle"></i> Khatam Quran Pertama</li>
+                        </ul>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-num">3</div>
+                        <h4>Tahfidz Lanjut</h4>
+                        <p>Santri yang telah hafal 10+ juz. Fokus pada kelancaran, kefasihan, dan pemahaman makna ayat.</p>
+                        <span class="level-target">Target: 10 Juz / Semester</span>
+                        <ul class="level-features">
+                            <li><i class="fas fa-check-circle"></i> Hafalan Juz 16 - 30</li>
+                            <li><i class="fas fa-check-circle"></i> Setoran 2 Halaman/Hari</li>
+                            <li><i class="fas fa-check-circle"></i> Murojaah 10 Juz/Minggu</li>
+                            <li><i class="fas fa-check-circle"></i> Khatam Quran Kedua</li>
+                        </ul>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-num">30</div>
+                        <h4>Tahfidz 30 Juz</h4>
+                        <p>Program khusus untuk santri yang ingin menyelesaikan hafalan 30 juz dengan sanad yang muttashil.</p>
+                        <span class="level-target">Target: 30 Juz / 3-4 Tahun</span>
+                        <ul class="level-features">
+                            <li><i class="fas fa-check-circle"></i> Hafalan 30 Juz Lengkap</li>
+                            <li><i class="fas fa-check-circle"></i> Sanad Muttashil</li>
+                            <li><i class="fas fa-check-circle"></i> Ijazah Hafalan</li>
+                            <li><i class="fas fa-check-circle"></i> Siap Mengajar</li>
+                        </ul>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-num"><i class="fas fa-moon"></i></div>
+                        <h4>Tahfidz Ramadhan</h4>
+                        <p>Program intensif selama bulan Ramadhan dengan target hafalan meningkat 2x lipat dari biasanya.</p>
+                        <span class="level-target">Target: 1 Juz / 10 Hari</span>
+                        <ul class="level-features">
+                            <li><i class="fas fa-check-circle"></i> Program 30 Hari</li>
+                            <li><i class="fas fa-check-circle"></i> Bimbingan Khusus</li>
+                            <li><i class="fas fa-check-circle"></i> Tadarus Berkala</li>
+                            <li><i class="fas fa-check-circle"></i> I'tikaf Akhir Ramadhan</li>
+                        </ul>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-num"><i class="fas fa-users"></i></div>
+                        <h4>Tahfidz Keluarga</h4>
+                        <p>Program hafalan untuk keluarga santri. Orang tua bisa belajar bersama anak di akhir pekan.</p>
+                        <span class="level-target">Target: 1 Juz / Bulan</span>
+                        <ul class="level-features">
+                            <li><i class="fas fa-check-circle"></i> Setiap Akhir Pekan</li>
+                            <li><i class="fas fa-check-circle"></i> Kelas Orang Tua</li>
+                            <li><i class="fas fa-check-circle"></i> Program Bonding</li>
+                            <li><i class="fas fa-check-circle"></i> Sertifikat Keluarga</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="schedule-box">
+                    <h4><i class="fas fa-calendar-alt"></i> Jadwal Murojaah Mingguan</h4>
+                    <div class="schedule-grid">
+                        <div class="schedule-item"><div class="day">Senin</div><div class="juz">Juz 30</div><div class="desc">Murojaah Juz Amma</div></div>
+                        <div class="schedule-item"><div class="day">Selasa</div><div class="juz">Juz 29</div><div class="desc">Murojaah Juz Tabarak</div></div>
+                        <div class="schedule-item"><div class="day">Rabu</div><div class="juz">Juz 28</div><div class="desc">Murojaah Juz Qad Sami'a</div></div>
+                        <div class="schedule-item"><div class="day">Kamis</div><div class="juz">Juz 1-5</div><div class="desc">Murojaah Awal Quran</div></div>
+                        <div class="schedule-item"><div class="day">Jumat</div><div class="juz">Juz 1-10</div><div class="desc">Murojaah Besar</div></div>
+                        <div class="schedule-item"><div class="day">Sabtu</div><div class="juz">Semua</div><div class="desc">Murojaah Keseluruhan</div></div>
+                    </div>
+                </div>
+                <div class="ustadz-box">
+                    <h4><i class="fas fa-chalkboard-teacher"></i> Ustadz & Ustadzah Pengajar</h4>
+                    <div class="ustadz-grid">
+                        <div class="ustadz-card"><div class="ustadz-avatar"><i class="fas fa-user"></i></div><h5>Ust. Ahmad Hafizh</h5><span>Ketua Bidang Tahfidz</span><div class="ustadz-badge">30 Juz - Sanad Muttashil</div></div>
+                        <div class="ustadz-card"><div class="ustadz-avatar"><i class="fas fa-user"></i></div><h5>Ust. Muhammad Fajar</h5><span>Pengajar Tahfidz Menengah</span><div class="ustadz-badge">20 Juz - Ijazah Hafalan</div></div>
+                        <div class="ustadz-card"><div class="ustadz-avatar"><i class="fas fa-user"></i></div><h5>Ust. Abdullah Al-Qarni</h5><span>Pengajar Tahfidz Lanjut</span><div class="ustadz-badge">15 Juz - Qori Internasional</div></div>
+                        <div class="ustadz-card"><div class="ustadz-avatar"><i class="fas fa-user"></i></div><h5>Ustadzah Aminah</h5><span>Pengajar Tahfidz Putri</span><div class="ustadz-badge">10 Juz - Metode Ummi</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KITAB KUNING -->
+    <section class="kitab-section" id="kitab-kuning">
+        <div class="section-header reveal">
+            <h2>Program Kitab Kuning</h2>
+            <div class="divider"></div>
+            <p>Studi kitab-kitab klasik dengan sanad yang sahih dan metode baca bandongan & sorogan</p>
+        </div>
+        <div class="program-card reveal">
+            <div class="program-header kitab-header">
+                <div class="program-header-icon"><i class="fas fa-book-open"></i></div>
+                <div>
+                    <h3>Matan Kitab Kuning</h3>
+                    <p>Kurikulum standar Pondok Pesantren Salafiyah dengan sanad yang muttashil</p>
+                </div>
+            </div>
+            <div class="program-content">
+                <div class="books-grid">
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Fathul Qorib</h4>
+                        <div class="book-author">Karya: Syeikh Ibnu Qasim Al-Ghazzi</div>
+                        <p class="book-desc">Kitab fiqih madzhab Syafi'i yang menjadi rujukan utama santri pemula dalam memahami ibadah sehari-hari.</p>
+                        <span class="book-level">Tingkat: Pemula</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> Bab Thaharah & Shalat</li>
+                            <li><i class="fas fa-circle"></i> 2 Semester</li>
+                            <li><i class="fas fa-circle"></i> Metode Sorogan</li>
+                        </ul>
+                    </div>
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Taqrib</h4>
+                        <div class="book-author">Karya: Syeikh Abdullah bin Husain Al-Anshori</div>
+                        <p class="book-desc">Ringkasan dari kitab Tuhfah yang membahas fiqih madzhab Syafi'i dengan bahasa yang lebih mudah dipahami.</p>
+                        <span class="book-level">Tingkat: Pemula</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> Bab Zakat & Puasa</li>
+                            <li><i class="fas fa-circle"></i> 2 Semester</li>
+                            <li><i class="fas fa-circle"></i> Metode Bandongan</li>
+                        </ul>
+                    </div>
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Alfiyah Ibnu Malik</h4>
+                        <div class="book-author">Karya: Ibnu Malik</div>
+                        <p class="book-desc">Kitab nahwu (tata bahasa Arab) dalam bentuk syair yang terdiri dari 1002 bait, wajib hafal bagi santri.</p>
+                        <span class="book-level">Tingkat: Menengah</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> Ilmu Nahwu Lengkap</li>
+                            <li><i class="fas fa-circle"></i> 4 Semester</li>
+                            <li><i class="fas fa-circle"></i> Hafalan + Pemahaman</li>
+                        </ul>
+                    </div>
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Jurumiyah</h4>
+                        <div class="book-author">Karya: Syeikh Abu Zakariya Yahya</div>
+                        <p class="book-desc">Kitab dasar nahwu yang wajib dikuasai sebelum mempelajari Alfiyah, membahas i'rab dan tanda-tandanya.</p>
+                        <span class="book-level">Tingkat: Pemula</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> Dasar I'rab</li>
+                            <li><i class="fas fa-circle"></i> 1 Semester</li>
+                            <li><i class="fas fa-circle"></i> Metode Sorogan</li>
+                        </ul>
+                    </div>
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Tuhfatul Muhtaj</h4>
+                        <div class="book-author">Karya: Syeikh Ibnu Hajar Al-Haitami</div>
+                        <p class="book-desc">Kitab fiqih madzhab Syafi'i tingkat lanjut, membahas berbagai masalah kontemporer dalam ibadah dan muamalat.</p>
+                        <span class="book-level">Tingkat: Lanjut</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> Fiqih Lanjut & Muamalat</li>
+                            <li><i class="fas fa-circle"></i> 4 Semester</li>
+                            <li><i class="fas fa-circle"></i> Metode Bandongan</li>
+                        </ul>
+                    </div>
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Minhajul Abidin</h4>
+                        <div class="book-author">Karya: Imam Al-Ghazali</div>
+                        <p class="book-desc">Kitab tasawuf yang membahas tahapan perjalanan spiritual seorang hamba menuju Allah SWT.</p>
+                        <span class="book-level">Tingkat: Lanjut</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> Tasawuf & Akhlak</li>
+                            <li><i class="fas fa-circle"></i> 2 Semester</li>
+                            <li><i class="fas fa-circle"></i> Metode Sorogan</li>
+                        </ul>
+                    </div>
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Safinatun Najah</h4>
+                        <div class="book-author">Karya: Syeikh Salim bin Sumair</div>
+                        <p class="book-desc">Kitab ringkasan fiqih yang populer di kalangan santri, mencakup thaharah, shalat, zakat, puasa, dan haji.</p>
+                        <span class="book-level">Tingkat: Pemula</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> Ringkasan Fiqih Lengkap</li>
+                            <li><i class="fas fa-circle"></i> 1 Semester</li>
+                            <li><i class="fas fa-circle"></i> Metode Sorogan</li>
+                        </ul>
+                    </div>
+                    <div class="book-card">
+                        <div class="book-icon"><i class="fas fa-book"></i></div>
+                        <h4>Arba'in Nawawi</h4>
+                        <div class="book-author">Karya: Imam An-Nawawi</div>
+                        <p class="book-desc">Kumpulan 42 hadits pilihan yang mencakup seluruh ajaran Islam, wajib hafal dan dipahami setiap santri.</p>
+                        <span class="book-level">Tingkat: Semua</span>
+                        <ul class="book-detail">
+                            <li><i class="fas fa-circle"></i> 42 Hadits Pilihan</li>
+                            <li><i class="fas fa-circle"></i> 1 Semester</li>
+                            <li><i class="fas fa-circle"></i> Hafalan + Syarah</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="metode-box">
+                    <h4><i class="fas fa-graduation-cap"></i> Metode Pembelajaran</h4>
+                    <div class="metode-grid">
+                        <div class="metode-card"><i class="fas fa-users"></i><h5>Bandongan</h5><p>Santri mendengarkan penjelasan ustadz secara klasik dengan kitab terbuka</p></div>
+                        <div class="metode-card"><i class="fas fa-user-graduate"></i><h5>Sorogan</h5><p>Santri membaca kitab di depan ustadz satu per satu untuk koreksi lafal</p></div>
+                        <div class="metode-card"><i class="fas fa-book-reader"></i><h5>Halaqah</h5><p>Diskusi kelompok kecil untuk memperdalam pemahaman kitab</p></div>
+                        <div class="metode-card"><i class="fas fa-pen-fancy"></i><h5>Makalah</h5><p>Penulisan makalah untuk melatih kemampuan analisis kitab</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRAMUKA -->
+    <section class="pramuka-section" id="pramuka">
+        <div class="section-header reveal">
+            <h2>Program Pramuka</h2>
+            <div class="divider"></div>
+            <p>Pembelajaran bertahan hidup, cara berorganisasi, dan peduli lingkungan</p>
+        </div>
+        <div class="program-card reveal">
+            <div class="program-header pramuka-header">
+                <div class="program-header-icon"><i class="fas fa-campground"></i></div>
+                <div>
+                    <h3>Pramuka Darut Thalib</h3>
+                    <p>Mencetak santri yang tangguh, mandiri, dan peduli lingkungan melalui kegiatan kepramukaan</p>
+                </div>
+            </div>
+            <div class="program-content">
+                <div class="pramuka-grid">
+                    <div class="pramuka-card">
+                        <div class="pramuka-icon"><i class="fas fa-hiking"></i></div>
+                        <h4>Bertahan Hidup</h4>
+                        <p>Belajar teknik bertahan hidup di alam terbuka, membangun shelter, dan navigasi darat.</p>
+                        <div class="pramuka-tags"><span>Survival</span><span>Navigasi</span><span>First Aid</span></div>
+                    </div>
+                    <div class="pramuka-card">
+                        <div class="pramuka-icon"><i class="fas fa-users"></i></div>
+                        <h4>Kepemimpinan</h4>
+                        <p>Pelatihan kepemimpinan melalui struktur organisasi pramuka dan pengambilan keputusan.</p>
+                        <div class="pramuka-tags"><span>Leadership</span><span>Teamwork</span><span>Disiplin</span></div>
+                    </div>
+                    <div class="pramuka-card">
+                        <div class="pramuka-icon"><i class="fas fa-leaf"></i></div>
+                        <h4>Peduli Lingkungan</h4>
+                        <p>Program penanaman pohon, pengelolaan sampah, dan konservasi alam.</p>
+                        <div class="pramuka-tags"><span>Green Scout</span><span>Recycling</span><span>Konservasi</span></div>
+                    </div>
+                    <div class="pramuka-card">
+                        <div class="pramuka-icon"><i class="fas fa-map-marked-alt"></i></div>
+                        <h4>Ekspedisi Alam</h4>
+                        <p>Kegiatan camping, hiking, dan ekspedisi alam untuk melatih ketahanan fisik dan mental.</p>
+                        <div class="pramuka-tags"><span>Camping</span><span>Hiking</span><span>Outbound</span></div>
+                    </div>
+                    <div class="pramuka-card">
+                        <div class="pramuka-icon"><i class="fas fa-hands-helping"></i></div>
+                        <h4>Bakti Sosial</h4>
+                        <p>Kegiatan sosial kemasyarakatan untuk melatih empati dan kepedulian terhadap sesama.</p>
+                        <div class="pramuka-tags"><span>Sosial</span><span>Humanitarian</span><span>Pengabdian</span></div>
+                    </div>
+                    <div class="pramuka-card">
+                        <div class="pramuka-icon"><i class="fas fa-award"></i></div>
+                        <h4>Lomba Ketrampilan</h4>
+                        <p>Persiapan dan pelatihan untuk berbagai lomba pramuka tingkat daerah dan nasional.</p>
+                        <div class="pramuka-tags"><span>Pionering</span><span>Tali-temali</span><span>Kompetisi</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BAHASA ASING -->
+    <section class="bahasa-section" id="bahasa">
+        <div class="section-header reveal">
+            <h2>Program Bahasa Asing</h2>
+            <div class="divider"></div>
+            <p>Program intensif bahasa Arab dan Inggris untuk mempersiapkan santri berkomunikasi global</p>
+        </div>
+        <div class="program-card reveal">
+            <div class="program-header bahasa-header">
+                <div class="program-header-icon"><i class="fas fa-globe"></i></div>
+                <div>
+                    <h3>Bahasa Asing Darut Thalib</h3>
+                    <p>Mempersiapkan santri berkomunikasi global dengan bahasa internasional</p>
+                </div>
+            </div>
+            <div class="program-content">
+                <div class="bahasa-grid">
+                    <div class="bahasa-card">
+                        <div class="bahasa-top arab">
+                            <i class="fas fa-mosque"></i>
+                            <h4>Bahasa Arab</h4>
+                        </div>
+                        <div class="bahasa-body">
+                            <p>Program intensif bahasa Arab dari dasar hingga mahir dengan metode Nahwu-Sharaf modern dan conversation harian.</p>
+                            <ul class="bahasa-list">
+                                <li><i class="fas fa-check"></i> Nahwu & Sharaf</li>
+                                <li><i class="fas fa-check"></i> Conversation Harian</li>
+                                <li><i class="fas fa-check"></i> Khat & Imla</li>
+                                <li><i class="fas fa-check"></i> Tarjamah Kitab</li>
+                                <li><i class="fas fa-check"></i> Sertifikat TOAFL</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bahasa-card">
+                        <div class="bahasa-top english">
+                            <i class="fas fa-globe-americas"></i>
+                            <h4>Bahasa Inggris</h4>
+                        </div>
+                        <div class="bahasa-body">
+                            <p>Pembelajaran bahasa Inggris komprehensif meliputi speaking, listening, reading, dan writing untuk komunikasi global.</p>
+                            <ul class="bahasa-list">
+                                <li><i class="fas fa-check"></i> Grammar & Vocabulary</li>
+                                <li><i class="fas fa-check"></i> Speaking & Pronunciation</li>
+                                <li><i class="fas fa-check"></i> Business English</li>
+                                <li><i class="fas fa-check"></i> Academic Writing</li>
+                                <li><i class="fas fa-check"></i> Sertifikat TOEFL/IELTS</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LEADERSHIP -->
+    <section class="leadership-section" id="leadership">
+        <div class="section-header reveal">
+            <h2>Program Leadership & Character</h2>
+            <div class="divider"></div>
+            <p>Pelatihan kepemimpinan Islami untuk melahirkan pemimpin masa depan</p>
+        </div>
+        <div class="program-card reveal">
+            <div class="program-header leadership-header">
+                <div class="program-header-icon"><i class="fas fa-chess-king"></i></div>
+                <div>
+                    <h3>Leadership & Character Darut Thalib</h3>
+                    <p>Membentuk karakter pemimpin yang berakhlak mulia dan visioner</p>
+                </div>
+            </div>
+            <div class="program-content">
+                <div class="leadership-grid">
+                    <div class="leadership-card">
+                        <i class="fas fa-microphone"></i>
+                        <h4>Public Speaking</h4>
+                        <p>Latihan berbicara di depan umum, dakwah, dan presentasi dengan percaya diri dan penuh hikmah.</p>
+                    </div>
+                    <div class="leadership-card">
+                        <i class="fas fa-users-cog"></i>
+                        <h4>Manajemen Organisasi</h4>
+                        <p>Pelatihan mengelola organisasi Islami, event, dan kegiatan kemasyarakatan secara profesional.</p>
+                    </div>
+                    <div class="leadership-card">
+                        <i class="fas fa-handshake"></i>
+                        <h4>Negotiation Skills</h4>
+                        <p>Teknik negosiasi dan mediasi konflik berdasarkan prinsip Islami untuk mencapai win-win solution.</p>
+                    </div>
+                    <div class="leadership-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <h4>Critical Thinking</h4>
+                        <p>Melatih kemampuan berpikir kritis, analitis, dan kreatif dalam menghadapi permasalahan kontemporer.</p>
+                    </div>
+                    <div class="leadership-card">
+                        <i class="fas fa-heart"></i>
+                        <h4>Emotional Intelligence</h4>
+                        <p>Pengembangan kecerdasan emosional, empati, dan kontrol diri sesuai tuntunan Islam.</p>
+                    </div>
+                    <div class="leadership-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Strategic Planning</h4>
+                        <p>Perencanaan strategis jangka panjang untuk organisasi dakwah dan bisnis halal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AKHLAK -->
+    <section class="akhlak-section" id="akhlak">
+        <div class="section-header reveal">
+            <h2>Program Akhlak & Character</h2>
+            <div class="divider"></div>
+            <p>Pembentukan akhlak mulia melalui pembiasaan dan praktik sehari-hari</p>
+        </div>
+        <div class="program-card reveal">
+            <div class="program-header akhlak-header">
+                <div class="program-header-icon"><i class="fas fa-heart"></i></div>
+                <div>
+                    <h3>Akhlak & Character Darut Thalib</h3>
+                    <p>Membentuk santri yang berakhlak mulia sesuai tuntunan Rasulullah SAW</p>
+                </div>
+            </div>
+            <div class="program-content">
+                <div class="akhlak-grid">
+                    <div class="akhlak-card">
+                        <div class="akhlak-icon"><i class="fas fa-praying-hands"></i></div>
+                        <h4>Adab Sehari-hari</h4>
+                        <p>Pembiasaan adab dalam makan, minum, tidur, bergaul, dan beraktivitas sesuai sunnah.</p>
+                    </div>
+                    <div class="akhlak-card">
+                        <div class="akhlak-icon"><i class="fas fa-mosque"></i></div>
+                        <h4>Ibadah Berkualitas</h4>
+                        <p>Peningkatan kualitas shalat, dzikir, dan ibadah dengan khushu dan keikhlasan.</p>
+                    </div>
+                    <div class="akhlak-card">
+                        <div class="akhlak-icon"><i class="fas fa-hands-helping"></i></div>
+                        <h4>Kepedulian Sosial</h4>
+                        <p>Program bakti sosial, pengabdian masyarakat, dan kegiatan humanitarian.</p>
+                    </div>
+                    <div class="akhlak-card">
+                        <div class="akhlak-icon"><i class="fas fa-seedling"></i></div>
+                        <h4>Disiplin & Tanggung Jawab</h4>
+                        <p>Pembentukan karakter disiplin, amanah, dan bertanggung jawab dalam setiap tugas.</p>
+                    </div>
+                    <div class="akhlak-card">
+                        <div class="akhlak-icon"><i class="fas fa-balance-scale"></i></div>
+                        <h4>Kejujuran & Integritas</h4>
+                        <p>Latihan kejujuran dalam ucapan, perbuatan, dan menjaga amanah dalam segala hal.</p>
+                    </div>
+                    <div class="akhlak-card">
+                        <div class="akhlak-icon"><i class="fas fa-smile"></i></div>
+                        <h4>Sabar & Ikhlas</h4>
+                        <p>Pelatihan kesabaran menghadapi cobaan dan keikhlasan dalam beramal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALERI HAFIZH -->
+    <section class="hafizh-section" id="galeri-hafizh">
+        <div class="section-header reveal">
+            <h2>Para Hafizh Darut Thalib</h2>
+            <div class="divider"></div>
+            <p>Alumni dan santri yang telah menyelesaikan hafalan 30 juz</p>
+        </div>
+        <div class="hafizh-grid">
+            <div class="hafizh-card reveal">
+                <div class="hafizh-avatar"><i class="fas fa-user"></i></div>
+                <h4>Ahmad Fauzi</h4>
+                <div class="juz-count">30 Juz</div>
+                <p>Hafalan selesai dalam 3 tahun. Saat ini melanjutkan studi di Universitas Al-Azhar Kairo.</p>
+                <div class="year">Angkatan 2020</div>
+            </div>
+            <div class="hafizh-card reveal">
+                <div class="hafizh-avatar"><i class="fas fa-user"></i></div>
+                <h4>Muhammad Rizal</h4>
+                <div class="juz-count">30 Juz</div>
+                <p>Hafalan selesai dalam 2.5 tahun. Kini menjadi pengajar tahfidz di pondok pesantren lain.</p>
+                <div class="year">Angkatan 2019</div>
+            </div>
+            <div class="hafizh-card reveal">
+                <div class="hafizh-avatar"><i class="fas fa-user"></i></div>
+                <h4>Fatimah Azzahra</h4>
+                <div class="juz-count">30 Juz</div>
+                <p>Hafalan selesai dalam 3.5 tahun. Aktif dalam dakwah dan pengajian di komunitas.</p>
+                <div class="year">Angkatan 2021</div>
+            </div>
+            <div class="hafizh-card reveal">
+                <div class="hafizh-avatar"><i class="fas fa-user"></i></div>
+                <h4>Abdullah Rahman</h4>
+                <div class="juz-count">30 Juz</div>
+                <p>Hafalan selesai dalam 4 tahun. Menjadi imam masjid besar di kota asalnya.</p>
+                <div class="year">Angkatan 2018</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JADWAL HARIAN -->
+    <section class="jadwal-section" id="jadwal">
+        <div class="section-header reveal">
+            <h2>Jadwal Kegiatan Harian</h2>
+            <div class="divider"></div>
+            <p>Rutinitas harian santri Pondok Pesantren Darut Thalib</p>
+        </div>
+        <div class="jadwal-table reveal">
+            <div class="jadwal-header">
+                <h3><i class="fas fa-calendar-day"></i> Senin - Kamis</h3>
+            </div>
+            <div class="jadwal-row header-row">
+                <div>Waktu</div>
+                <div>Kegiatan</div>
+                <div>Keterangan</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">03.30 - 04.30</div>
+                <div class="jadwal-activity">Tahajjud & Dzikir</div>
+                <div class="jadwal-detail">Shalat malam & wirid pagi</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">04.30 - 05.30</div>
+                <div class="jadwal-activity">Shalat Subuh Berjamaah</div>
+                <div class="jadwal-detail">Dilanjutkan tadarus & doa</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">05.30 - 06.30</div>
+                <div class="jadwal-activity">Murojaah Pagi</div>
+                <div class="jadwal-detail">Setoran hafalan pagi</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">06.30 - 07.30</div>
+                <div class="jadwal-activity">Sarapan & Persiapan</div>
+                <div class="jadwal-detail">Makan bersama & mandi</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">07.30 - 11.30</div>
+                <div class="jadwal-activity">Kajian Kitab Kuning</div>
+                <div class="jadwal-detail">Bandongan & Sorogan</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">11.30 - 12.30</div>
+                <div class="jadwal-activity">Shalat Dzuhur & Makan Siang</div>
+                <div class="jadwal-detail">Istirahat siang</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">12.30 - 14.30</div>
+                <div class="jadwal-activity">Tidur Siang & Istirahat</div>
+                <div class="jadwal-detail">Rehat & persiapan sore</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">14.30 - 15.30</div>
+                <div class="jadwal-activity">Shalat Ashar & Murojaah</div>
+                <div class="jadwal-detail">Setoran hafalan sore</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">15.30 - 17.30</div>
+                <div class="jadwal-activity">Kajian Bahasa & Pramuka</div>
+                <div class="jadwal-detail">Bahasa Arab, Inggris, Kepramukaan</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">17.30 - 18.30</div>
+                <div class="jadwal-activity">Shalat Maghrib & Ngaji</div>
+                <div class="jadwal-detail">Tadarus & dzikir petang</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">18.30 - 19.30</div>
+                <div class="jadwal-activity">Shalat Isya & Halaqah</div>
+                <div class="jadwal-detail">Diskusi kitab malam</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">19.30 - 21.00</div>
+                <div class="jadwal-activity">Belajar Mandiri & Murojaah</div>
+                <div class="jadwal-detail">Waktu pribadi santri</div>
+            </div>
+            <div class="jadwal-row">
+                <div class="jadwal-time">21.00 - 22.00</div>
+                <div class="jadwal-activity">Istirahat Malam</div>
+                <div class="jadwal-detail">Persiapan tidur & wirid</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo-text">Darut <span>Thalib</span></div>
+                <p>Mencetak generasi Qur'ani yang berakhlak mulia, berilmu luas, dan siap menjadi pemimpin umat.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Link Cepat</h4>
+                <ul>
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="index.html#tentang">Tentang Kami</a></li>
+                    <li><a href="pelajaran.html">Program</a></li>
+                    <li><a href="prestasi.html">Prestasi</a></li>
+                    <li><a href="index.html#fasilitas">Fasilitas</a></li>
+                    <li><a href="index.html#galeri">Galeri</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Semua Program</h4>
+                <ul>
+                    <li><a href="#tahfidz">Tahfidz Quran</a></li>
+                    <li><a href="#kitab-kuning">Kitab Kuning</a></li>
+                    <li><a href="#pramuka">Pramuka</a></li>
+                    <li><a href="#bahasa">Bahasa Asing</a></li>
+                    <li><a href="#leadership">Leadership</a></li>
+                    <li><a href="#akhlak">Akhlak & Character</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><a href="mailto:info@darutthalib.sch.id">info@darutthalib.sch.id</a></li>
+                    <li><a href="tel:082287196964">0822-8719-6964</a></li>
+                    <li><a href="https://wa.me/6282287196964">+62 822-8719-6964</a></li>
+                    <li><a href="#">Kota Solok, Sumatera Barat</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Pondok Pesantren Darut Thalib. All Rights Reserved. | Dibuat dengan <i class="fas fa-heart" style="color: var(--gold);"></i> untuk Umat</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/6282287196964" target="_blank" class="whatsapp-btn">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <div class="whatsapp-tooltip">Chat dengan Kami!</div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
